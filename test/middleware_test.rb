@@ -59,18 +59,18 @@ class AppTest < Minitest::Spec
 
     it 'pass-through requests to nextapp' do
       get '/'
-      assert_equal response.body, 'hi'
+      assert_equal 'hi', response.body
       post '/'
-      assert_equal response.body, 'hi'
+      assert_equal 'hi', response.body
       get '/site'
-      assert_equal response.body, 'hi'
+      assert_equal 'hi', response.body
       post '/site/sha'
-      assert_equal response.body, 'hi'
+      assert_equal 'hi', response.body
     end
 
     it 'pass requests to RevisionPlate::App on specific path' do
       get '/site/sha'
-      assert_equal response.body, 'deadbeef'
+      assert_equal 'deadbeef', response.body
 
       head '/site/sha'
       assert_equal 200, response.status
