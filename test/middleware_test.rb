@@ -32,6 +32,8 @@ class AppTest < Minitest::Spec
         def call(env)
           [200, {'Content-Type' => 'text/plain'}, "deadbeef"]
         end
+
+        const_set(:ACCEPT_METHODS, %w[GET HEAD].freeze)
       end
     end
 
@@ -69,6 +71,10 @@ class AppTest < Minitest::Spec
     it 'pass requests to RevisionPlate::App on specific path' do
       get '/site/sha'
       assert_equal response.body, 'deadbeef'
+
+      head '/site/sha'
+      assert_equal 200, response.status
+      assert_equal 'deadbeef', response.body
     end
   end
 end

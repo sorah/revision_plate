@@ -24,19 +24,31 @@ module RevisionPlate
       end
     end
 
+    ACCEPT_METHODS = ['GET', 'HEAD'].freeze
+
     def call(env)
-      unless env['REQUEST_METHOD'] == 'GET' && (@path ? env['PATH_INFO'] == @path : true)
+      unless ACCEPT_METHODS.include?(env['REQUEST_METHOD']) && (@path ? env['PATH_INFO'] == @path : true)
         return [404, {'Content-Type' => 'text/plain'}, []]
       end
 
       if @revision
         if @file.exist?
-          [200, {'Content-Type' => 'text/plain'}, [@revision, ?\n]]
+          status = 200
+          body = [@revision, ?\n]
         else
-          [404, {'Content-Type' => 'text/plain'}, ["REVISION_FILE_REMOVED\n"]]
+          status = 404
+          body = ["REVISION_FILE_REMOVED\n"]
         end
       else
-        [404, {'Content-Type' => 'text/plain'}, ["REVISION_FILE_NOT_FOUND\n"]]
+        status = 404
+        body = ["REVISION_FILE_NOT_FOUND\n"]
+      end
+
+      headers = {'Content-Type' => 'text/plain'}
+      if env['REQUEST_METHOD'] == 'HEAD'
+        [status, headers, []]
+      else
+        [status, headers, body]
       end
     end
   end

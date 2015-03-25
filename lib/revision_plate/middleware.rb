@@ -8,8 +8,10 @@ module RevisionPlate
       @revision_app = App.new(file, **options)
     end
 
+    ACCEPT_METHODS = %w[GET HEAD].freeze
+
     def call(env)
-      if env['PATH_INFO'] == @path && env['REQUEST_METHOD'] == 'GET'
+      if env['PATH_INFO'] == @path && ACCEPT_METHODS.include?(env['REQUEST_METHOD'])
         @revision_app.call(env)
       else
         @app.call(env)

@@ -42,6 +42,14 @@ class AppTest < Minitest::Spec
           assert_equal 200, response.status
           assert_equal "a\n", response.body
         end
+
+        describe 'HEAD request' do
+          it 'returns 200' do
+            head '/'
+            assert_equal 200, response.status
+            assert_equal '', response.body
+          end
+        end
       end
 
       describe 'without Rails' do
@@ -59,10 +67,17 @@ class AppTest < Minitest::Spec
         assert_equal 200, response.status
         assert_equal "a\n", response.body
 
+        head '/site/sha'
+        assert_equal 200, response.status
+        assert_equal "", response.body
+
         post '/site/sha'
         assert_equal 404, response.status
 
         get '/site/sha/a'
+        assert_equal 404, response.status
+
+        head '/site/sha/a'
         assert_equal 404, response.status
 
         get '/'
@@ -90,6 +105,12 @@ class AppTest < Minitest::Spec
       assert_equal 404, response.status
     end
 
+    it 'returns 200 for HEAD request' do
+      head '/'
+      assert_equal 200, response.status
+      assert_equal '', response.body
+    end
+
     it 'returns 404 if removed' do
       app # ensure to instantiate
       file.unlink
@@ -97,6 +118,15 @@ class AppTest < Minitest::Spec
       get '/'
       assert_equal 404, response.status
       assert_equal "REVISION_FILE_REMOVED\n", response.body
+    end
+
+    it 'returns 404 for HEAD request if removed' do
+      app # ensure to instantiate
+      file.unlink
+
+      head '/'
+      assert_equal 404, response.status
+      assert_equal '', response.body
     end
 
     it 'returns 404 if not exists' do
@@ -108,6 +138,15 @@ class AppTest < Minitest::Spec
       assert_equal "REVISION_FILE_NOT_FOUND\n", response.body
     end
 
+    it 'returns 404 for HEAD request if not exists' do
+      file.unlink
+      app # instantiate
+
+      head '/'
+      assert_equal 404, response.status
+      assert_equal '', response.body
+    end
+
     it 'returns 404 if created but it was not existed' do
       file.unlink
       app # instantiate
@@ -116,6 +155,16 @@ class AppTest < Minitest::Spec
       get '/'
       assert_equal 404, response.status
       assert_equal "REVISION_FILE_NOT_FOUND\n", response.body
+    end
+
+    it 'returns 404 for HEAD request if created but it was not existed' do
+      file.unlink
+      app # instantiate
+      File.write file.to_s, "b\n"
+
+      head '/'
+      assert_equal 404, response.status
+      assert_equal '', response.body
     end
   end
 end
