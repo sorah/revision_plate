@@ -5,6 +5,8 @@ module RevisionPlate
     def initialize(file = nil, path: nil)
       @file = file
       @path = path
+      @heroku_slug_commit = ENV["HEROKU_SLUG_COMMIT"]
+
       if @file
         unless @file.kind_of?(Pathname)
           @file = Pathname.new(@file)
@@ -12,13 +14,15 @@ module RevisionPlate
       else
         if defined? Rails
           @file = Rails.root.join('REVISION')
-        else
+        elsif @heroku_slug_commit.nil?
           raise ArgumentError, "couldn't locate REVISION file"
         end
       end
 
       if @file.exist?
         @revision = @file.read.chomp
+      elsif @heroku_slug_commit
+        @revision = @heroku_slug_commit
       else
         @revision = nil
       end
@@ -32,7 +36,7 @@ module RevisionPlate
       end
 
       if @revision
-        if @file.exist?
+        if @file.exist? || @heroku_slug_commit
           status = 200
           body = [@revision, ?\n]
         else
