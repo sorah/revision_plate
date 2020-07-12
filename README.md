@@ -63,6 +63,16 @@ get '/site/sha' => RevisionPlate::App.new
 get '/site/sha' => RevisionPlate::App.new("/path/to/my/favorite/REVISION")
 ```
 
+### heroku suppor
+
+revision_plate reads the environment variable HEROKU_SLUG_COMMIT.
+
+https://devcenter.heroku.com/articles/dyno-metadata
+
+```
+$ heroku labs:enable runtime-dyno-metadata -a <app name>
+```
+
 ## Development
 
 ### Testing
