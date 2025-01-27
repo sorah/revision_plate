@@ -28,7 +28,7 @@ module RevisionPlate
 
     def call(env)
       unless ACCEPT_METHODS.include?(env['REQUEST_METHOD']) && (@path ? env['PATH_INFO'] == @path : true)
-        return [404, {'Content-Type' => 'text/plain'}, []]
+        return [404, {'content-type' => 'text/plain'}, []]
       end
 
       if @revision
@@ -44,7 +44,7 @@ module RevisionPlate
         body = ["REVISION_FILE_NOT_FOUND\n"]
       end
 
-      headers = {'Content-Type' => 'text/plain'}
+      headers = {'content-type' => 'text/plain'}
       if env['REQUEST_METHOD'] == 'HEAD'
         [status, headers, []]
       else

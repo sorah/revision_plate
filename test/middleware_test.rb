@@ -14,7 +14,7 @@ class AppTest < Minitest::Spec
   describe 'middleware' do
     let(:tempfile) { Tempfile.new('revision_plate-middielware-test') }
 
-    let(:nextapp) { -> (env) { [200, {'Content-Type' => 'text/plain'}, ['hi']] } }
+    let(:nextapp) { -> (env) { [200, {'content-type' => 'text/plain'}, ['hi']] } }
     let(:mockapp) do
       Class.new do
         def self.instances
@@ -30,7 +30,7 @@ class AppTest < Minitest::Spec
         attr_reader :file, :options
 
         def call(env)
-          [200, {'Content-Type' => 'text/plain'}, "deadbeef"]
+          [200, {'content-type' => 'text/plain'}, "deadbeef"]
         end
 
         const_set(:ACCEPT_METHODS, %w[GET HEAD].freeze)
