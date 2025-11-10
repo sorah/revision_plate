@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    revision_plate (0.1.3)
+    revision_plate (1.0.0)
       rack
 
 GEM
